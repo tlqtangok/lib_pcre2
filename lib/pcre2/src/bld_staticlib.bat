@@ -4,6 +4,8 @@ cl /c /W4 /I"..\..\pcre2\include" /DPCRE2_STATIC /EHsc regex.cpp
 lib /OUT:regex_8.lib regex.obj
 
 copy /Y regex_8.lib ..\..\pcre2\lib\
+copy /Y regex.h ..\..\pcre2\include\
+
 del regex_8.lib *.obj
 
 
