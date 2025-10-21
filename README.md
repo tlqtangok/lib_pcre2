@@ -1,5 +1,5 @@
 # lib_pcre2
-a integrated  cpp pcre2lib,  just like perl regex 
+a integrated cpp pcre2 lib,  just like perl regex 
 
 
 ## set environment
