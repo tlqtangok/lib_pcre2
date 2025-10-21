@@ -71,14 +71,16 @@ echo Build failed!
 d:\jd\t\git\lib_pcre2>echo.
 
 
-d:\jd\t\git\lib_pcre2>echo Build successful! Output: lib_pcre2.exe
-Build successful! Output: lib_pcre2.exe
+d:\jd\t\git\lib_pcre2>echo Build successful! Output: main.exe
+Build successful! Output: main.exe
 
 d:\jd\t\git\lib_pcre2>pause
 
 ```
 
 ## run log
+
+```text
 d:\jd\t\git\lib_pcre2>.\main.exe
 PCRE2 Version: 10.46 2025-08-27
 
@@ -111,7 +113,6 @@ After:  (123) 456-7890
 
 === All tests completed ===
 
-```text
 
 
 ```
