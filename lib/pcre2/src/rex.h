@@ -8,15 +8,15 @@
 #include <memory>
 #include <stdexcept>
 
-class Regex;
-class RegexMatch;
-class RegexSubst;
+class rex;
+class rex_match;
+class rex_subst;
 
-class RegexMatch
+class rex_match 
 {
 public:
-    RegexMatch(const std::string& pattern, uint32_t options = 0);
-    ~RegexMatch();
+    rex_match(const std::string& pattern, uint32_t options = 0);
+    ~rex_match();
     
     bool operator()(const std::string& subject);
     
@@ -35,11 +35,11 @@ private:
     int _match_result;
 };
 
-class RegexSubst
+class rex_subst 
 {
 public:
-    RegexSubst(const std::string& pattern, const std::string& replacement, bool global = false);
-    ~RegexSubst();
+    rex_subst(const std::string& pattern, const std::string& replacement, bool global = false);
+    ~rex_subst();
     
     std::string operator()(const std::string& subject);
     int count() const;
@@ -54,13 +54,13 @@ private:
     int _subst_count;
 };
 
-class Regex
+class rex 
 {
 public:
-    Regex(const std::string& text);
+    rex(const std::string& text);
     
-    bool operator%(const RegexMatch& matcher);
-    std::string operator%(const RegexSubst& subst);
+    bool operator%(const rex_match& matcher);
+    std::string operator%(const rex_subst& subst);
     
     operator std::string() const;
     std::string str() const;
@@ -69,10 +69,10 @@ private:
     std::string _text;
 };
 
-RegexMatch m(const std::string& pattern);
-RegexMatch m(const std::string& pattern, const std::string& flags);
+rex_match m(const std::string& pattern);
+rex_match m(const std::string& pattern, const std::string& flags);
 
-RegexSubst s(const std::string& pattern, const std::string& replacement);
-RegexSubst s(const std::string& pattern, const std::string& replacement, const std::string& flags);
+rex_subst s(const std::string& pattern, const std::string& replacement);
+rex_subst s(const std::string& pattern, const std::string& replacement, const std::string& flags);
 
 #endif

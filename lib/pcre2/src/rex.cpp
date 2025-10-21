@@ -1,13 +1,13 @@
-#include "regex.h"
+#include "rex.h"
 #include <cstring>
 
-RegexMatch::RegexMatch(const std::string& pattern, uint32_t options)
+rex_match::rex_match(const std::string& pattern, uint32_t options)
     : _regex(nullptr), _match_data(nullptr), _match_result(-1)
 {
     compile(pattern, options);
 }
 
-RegexMatch::~RegexMatch()
+rex_match::~rex_match()
 {
     if (_match_data)
     {
@@ -19,7 +19,7 @@ RegexMatch::~RegexMatch()
     }
 }
 
-void RegexMatch::compile(const std::string& pattern, uint32_t options)
+void rex_match::compile(const std::string& pattern, uint32_t options)
 {
     int errorcode;
     PCRE2_SIZE erroroffset;
@@ -38,7 +38,7 @@ void RegexMatch::compile(const std::string& pattern, uint32_t options)
         PCRE2_UCHAR buffer[256];
         pcre2_get_error_message(errorcode, buffer, sizeof(buffer));
         throw std::runtime_error(
-            std::string("Regex compile failed at ") + 
+            std::string("rex compile failed at ") + 
             std::to_string(erroroffset) + ": " + 
             reinterpret_cast<char*>(buffer)
         );
@@ -47,7 +47,7 @@ void RegexMatch::compile(const std::string& pattern, uint32_t options)
     _match_data = pcre2_match_data_create_from_pattern(_regex, nullptr);
 }
 
-bool RegexMatch::operator()(const std::string& subject)
+bool rex_match::operator()(const std::string& subject)
 {
     _subject = subject;
     _match_result = pcre2_match(
@@ -63,7 +63,7 @@ bool RegexMatch::operator()(const std::string& subject)
     return _match_result >= 0;
 }
 
-std::string RegexMatch::operator[](size_t index) const
+std::string rex_match::operator[](size_t index) const
 {
     if (_match_result < 0 || static_cast<int>(index) >= _match_result)
     {
@@ -77,30 +77,30 @@ std::string RegexMatch::operator[](size_t index) const
     return _subject.substr(start, length);
 }
 
-size_t RegexMatch::count() const
+size_t rex_match::count() const
 {
     return _match_result > 0 ? _match_result : 0;
 }
 
-std::string RegexMatch::matched() const
+std::string rex_match::matched() const
 {
     return operator[](0);
 }
 
-std::string RegexMatch::version()
+std::string rex_match::version()
 {
     char version[64];
     pcre2_config(PCRE2_CONFIG_VERSION, version);
     return std::string(version);
 }
 
-RegexSubst::RegexSubst(const std::string& pattern, const std::string& replacement, bool global)
+rex_subst::rex_subst(const std::string& pattern, const std::string& replacement, bool global)
     : _regex(nullptr), _replacement(replacement), _global(global), _subst_count(0)
 {
     compile(pattern);
 }
 
-RegexSubst::~RegexSubst()
+rex_subst::~rex_subst()
 {
     if (_regex)
     {
@@ -108,7 +108,7 @@ RegexSubst::~RegexSubst()
     }
 }
 
-void RegexSubst::compile(const std::string& pattern)
+void rex_subst::compile(const std::string& pattern)
 {
     int errorcode;
     PCRE2_SIZE erroroffset;
@@ -127,13 +127,13 @@ void RegexSubst::compile(const std::string& pattern)
         PCRE2_UCHAR buffer[256];
         pcre2_get_error_message(errorcode, buffer, sizeof(buffer));
         throw std::runtime_error(
-            std::string("Regex compile failed: ") + 
+            std::string("rex compile failed: ") + 
             reinterpret_cast<char*>(buffer)
         );
     }
 }
 
-std::string RegexSubst::expandReplacement(const std::string& subject, PCRE2_SIZE* ovector, int rc)
+std::string rex_subst::expandReplacement(const std::string& subject, PCRE2_SIZE* ovector, int rc)
 {
     std::string result = _replacement;
     
@@ -156,7 +156,7 @@ std::string RegexSubst::expandReplacement(const std::string& subject, PCRE2_SIZE
     return result;
 }
 
-std::string RegexSubst::operator()(const std::string& subject)
+std::string rex_subst::operator()(const std::string& subject)
 {
     _subst_count = 0;
     std::string result = subject;
@@ -203,33 +203,33 @@ std::string RegexSubst::operator()(const std::string& subject)
     return result;
 }
 
-int RegexSubst::count() const
+int rex_subst::count() const
 {
     return _subst_count;
 }
 
-Regex::Regex(const std::string& text)
+rex::rex(const std::string& text)
     : _text(text)
 {
 }
 
-bool Regex::operator%(const RegexMatch& matcher)
+bool rex::operator%(const rex_match& matcher)
 {
-    return const_cast<RegexMatch&>(matcher)(_text);
+    return const_cast<rex_match&>(matcher)(_text);
 }
 
-std::string Regex::operator%(const RegexSubst& subst)
+std::string rex::operator%(const rex_subst& subst)
 {
-    _text = const_cast<RegexSubst&>(subst)(_text);
+    _text = const_cast<rex_subst&>(subst)(_text);
     return _text;
 }
 
-Regex::operator std::string() const
+rex::operator std::string() const
 {
     return _text;
 }
 
-std::string Regex::str() const
+std::string rex::str() const
 {
     return _text;
 }
@@ -250,23 +250,23 @@ static uint32_t parseFlags(const std::string& flags)
     return options;
 }
 
-RegexMatch m(const std::string& pattern)
+rex_match m(const std::string& pattern)
 {
-    return RegexMatch(pattern);
+    return rex_match(pattern);
 }
 
-RegexMatch m(const std::string& pattern, const std::string& flags)
+rex_match m(const std::string& pattern, const std::string& flags)
 {
-    return RegexMatch(pattern, parseFlags(flags));
+    return rex_match(pattern, parseFlags(flags));
 }
 
-RegexSubst s(const std::string& pattern, const std::string& replacement)
+rex_subst s(const std::string& pattern, const std::string& replacement)
 {
-    return RegexSubst(pattern, replacement, false);
+    return rex_subst(pattern, replacement, false);
 }
 
-RegexSubst s(const std::string& pattern, const std::string& replacement, const std::string& flags)
+rex_subst s(const std::string& pattern, const std::string& replacement, const std::string& flags)
 {
     bool global = flags.find('g') != std::string::npos;
-    return RegexSubst(pattern, replacement, global);
+    return rex_subst(pattern, replacement, global);
 }

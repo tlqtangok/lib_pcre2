@@ -23,12 +23,12 @@ if not %errorlevel% equ 0 (
 
 :: important : no /D DEF_DLL_EXPORTS in VS_CL_OPT !!!
 CL.exe  %VS_CL_OPT_NODEBUG% /I"%INC%" *.cpp
-lib.exe %VS_LIB_OPT% /OUT:"regex_8.lib"  *.obj ..\..\pcre2\lib\pcre2-8.lib
+lib.exe %VS_LIB_OPT% /OUT:"rex_8.lib"  *.obj ..\..\pcre2\lib\pcre2-8.lib
 
-copy /Y regex_8.lib ..\..\pcre2\lib\
-copy /Y regex.h ..\..\pcre2\include\
+copy /Y rex_8.lib ..\..\pcre2\lib\
+copy /Y rex.h ..\..\pcre2\include\
 
-del regex_8.lib *.obj *.pdb *.idb
+del rex_8.lib *.obj *.pdb *.idb
 
 
 ::CL.exe  %VS_CL_OPT_DEBUG% /I"%INC%" ..\src\test.cpp
