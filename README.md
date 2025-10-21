@@ -116,3 +116,109 @@ After:  (123) 456-7890
 
 
 ```
+
+
+## interface 
+
+### demo match
+
+```cpp
+        Regex text("Hello 123 World");
+        
+        if (text % m(R"(\d+)"))
+        {
+            std::cout << "Match found!" << std::endl;
+        }
+        else
+        {
+            std::cout << "No match" << std::endl; 
+        }
+
+```
+
+### demo capture groups
+
+```cpp
+        Regex email("user@example.com");
+        auto matcher = m(R"((\w+)@(\w+\.\w+))");
+        
+        if (email % matcher)
+        {
+            std::cout << "Full match: " << matcher[0] << std::endl;
+            std::cout << "Username: " << matcher[1] << std::endl;
+            std::cout << "Domain: " << matcher[2] << std::endl;
+        }
+
+```
+
+### demo case insensitive match
+
+```cpp
+        Regex text("Hello World");
+        
+        if (text % m(R"(hello)", "i"))
+        {
+            std::cout << "Case insensitive match works!" << std::endl;
+        }
+
+```
+
+### demo simple substitution
+
+```cpp
+        Regex text("abc123abc456");
+        std::cout << "Before: " << text.str() << std::endl;
+        
+        text % s(R"(abc)", "XYZ");
+        std::cout << "After:  " << text.str() << std::endl;
+
+```
+
+
+### demo global substitution
+
+```cpp
+        Regex text("abc123abc456abc");
+        std::cout << "Before: " << text.str() << std::endl;
+        
+        text % s(R"(abc)", "XYZ", "g");
+        std::cout << "After:  " << text.str() << std::endl;
+
+```
+
+
+### demo multiple operations
+
+```cpp
+        Regex text("The price is $100");
+        
+        if (text % m(R"(\$(\d+))"))
+        {
+            auto matcher = m(R"(\$(\d+))");
+            // matcher(text.str());
+            text % matcher;
+
+            std::cout << "Found price: $" << matcher[1] << std::endl;
+        }
+        
+        text % s(R"(\$\d+)", "$200");
+        std::cout << "Updated: " << text.str() << std::endl;
+
+```
+
+
+### demo capture order
+
+```cpp
+        Regex phone("1234567890");
+        auto phone_matcher = m(R"((\d{3})(\d{3})(\d{4}))");
+        
+        if (phone % phone_matcher)
+        {
+            std::cout << "Before: " << phone.str() << std::endl;
+            
+            phone % s(R"((\d{3})(\d{3})(\d{4}))", "($1) $2-$3");
+            std::cout << "After:  " << phone.str() << std::endl;
+        }
+
+```
