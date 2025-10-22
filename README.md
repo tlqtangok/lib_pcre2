@@ -14,7 +14,7 @@ a integrated cpp pcre2 lib,  just like perl regex
 
 ```bash
 :: in cmd.exe
-bld.bat 
+bld_staticlib_exe.bat 
 
 ```
 
