@@ -1,13 +1,13 @@
-#include "regex.h"
+#include "rex.h"
 #include <iostream>
 
 int main()
 {
-    std::cout << "PCRE2 Version: " << RegexMatch::version() << std::endl << std::endl;
+    std::cout << "PCRE2 Version: " << rex_match::version() << std::endl << std::endl;
     
     {
         std::cout << "=== Test 1: Basic Match ===" << std::endl;
-        Regex text("Hello 123 World");
+        rex text("Hello 123 World");
         
         if (text % m(R"(\d+)"))
         {
@@ -21,8 +21,8 @@ int main()
     
     {
         std::cout << "\n=== Test 2: Capture Groups ===" << std::endl;
-        Regex email("user@example.com");
-        auto matcher = m(R"((\w+)@(\w+\.\w+))");
+        rex email("user@example.com");
+        rex_match matcher = m(R"((\w+)@(\w+\.\w+))");
         
         if (email % matcher)
         {
@@ -34,7 +34,7 @@ int main()
     
     {
         std::cout << "\n=== Test 3: Case Insensitive ===" << std::endl;
-        Regex text("Hello World");
+        rex text("Hello World");
         
         if (text % m(R"(hello)", "i"))
         {
@@ -44,7 +44,7 @@ int main()
     
     {
         std::cout << "\n=== Test 4: Simple Substitution ===" << std::endl;
-        Regex text("abc123abc456");
+        rex text("abc123abc456");
         
         std::cout << "Before: " << text.str() << std::endl;
         text % s(R"(abc)", "XYZ");
@@ -53,7 +53,7 @@ int main()
     
     {
         std::cout << "\n=== Test 5: Global Substitution ===" << std::endl;
-        Regex text("abc123abc456abc");
+        rex text("abc123abc456abc");
         
         std::cout << "Before: " << text.str() << std::endl;
         text % s(R"(abc)", "XYZ", "g");
@@ -62,7 +62,7 @@ int main()
     
     {
         std::cout << "\n=== Test 6: Multiple Operations ===" << std::endl;
-        Regex text("The price is $100");
+        rex text("The price is $100");
         
         if (text % m(R"(\$(\d+))"))
         {
@@ -79,7 +79,7 @@ int main()
     
     {
         std::cout << "\n=== Test 7: Phone Formatting ===" << std::endl;
-        Regex phone("1234567890");
+        rex phone("1234567890");
         
         std::cout << "Before: " << phone.str() << std::endl;
         phone % s(R"((\d{3})(\d{3})(\d{4}))", R"(($1) $2-$3)");

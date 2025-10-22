@@ -123,7 +123,7 @@ After:  (123) 456-7890
 ### demo match
 
 ```cpp
-        Regex text("Hello 123 World");
+        rex text("Hello 123 World");
         
         if (text % m(R"(\d+)"))
         {
@@ -139,7 +139,7 @@ After:  (123) 456-7890
 ### demo capture groups
 
 ```cpp
-        Regex email("user@example.com");
+        rex email("user@example.com");
         auto matcher = m(R"((\w+)@(\w+\.\w+))");
         
         if (email % matcher)
@@ -154,7 +154,7 @@ After:  (123) 456-7890
 ### demo case insensitive match
 
 ```cpp
-        Regex text("Hello World");
+        rex text("Hello World");
         
         if (text % m(R"(hello)", "i"))
         {
@@ -166,7 +166,7 @@ After:  (123) 456-7890
 ### demo simple substitution
 
 ```cpp
-        Regex text("abc123abc456");
+        rex text("abc123abc456");
         std::cout << "Before: " << text.str() << std::endl;
         
         text % s(R"(abc)", "XYZ");
@@ -178,7 +178,7 @@ After:  (123) 456-7890
 ### demo global substitution
 
 ```cpp
-        Regex text("abc123abc456abc");
+        rex text("abc123abc456abc");
         std::cout << "Before: " << text.str() << std::endl;
         
         text % s(R"(abc)", "XYZ", "g");
@@ -190,7 +190,7 @@ After:  (123) 456-7890
 ### demo multiple operations
 
 ```cpp
-        Regex text("The price is $100");
+        rex text("The price is $100");
         
         if (text % m(R"(\$(\d+))"))
         {
@@ -210,7 +210,7 @@ After:  (123) 456-7890
 ### demo capture order
 
 ```cpp
-        Regex phone("1234567890");
+        rex phone("1234567890");
         auto phone_matcher = m(R"((\d{3})(\d{3})(\d{4}))");
         
         if (phone % phone_matcher)
