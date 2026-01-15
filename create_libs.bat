@@ -1,6 +1,6 @@
 :: create_libs.bat debug && create_libs.bat rel
 @echo off
-REM Build PCRE2 static library and executable
+REM Build fmt library as a static library (.lib)
 REM Usage: create_libs.bat [debug|release|rel]
 REM Default: debug
 
@@ -13,16 +13,19 @@ if /i "%1"=="rel" set BUILD_TYPE=release
 
 :set_config
 REM Define compiler options for both configurations
-REM Debug: Minimal size while keeping debug symbols
-set VS_CL_OPT_DEBUG=/c /Zi /nologo /W3 /sdl /Od /Gy /Gw /D DEBUG /D _CONSOLE /EHsc /MDd /Zc:inline /permissive- /TP
+REM Debug: Keep debug info but optimize for size
+set VS_CL_OPT_DEBUG=/c /Zi /nologo /W3 /O1 /Oy /Gy /Gw /D DEBUG /D _CONSOLE /EHsc /MDd /Zc:inline /permissive- /TP
 set VS_LIB_OPT_DEBUG=/NOLOGO /MACHINE:X64
-set VS_LINK_OPT_DEBUG=/ERRORREPORT:PROMPT /INCREMENTAL /MANIFEST /manifest:embed /DEBUG /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X64 /MANIFESTUAC:"level='asInvoker' uiAccess='false'"
+set VS_LINK_OPT_DEBUG=/MANIFEST /manifest:embed /DEBUG:FASTLINK /OPT:REF /OPT:ICF /SUBSYSTEM:CONSOLE /MACHINE:X64
 
 REM Release: Maximum optimization for smallest size
-::set VS_CL_OPT_RELEASE=/c /nologo /W3 /O1 /Oi /Gy /Gw /GL /GS- /D NDEBUG /D _CONSOLE /EHsc /MD /Zc:inline /permissive- /TP
-set VS_CL_OPT_RELEASE=/c /Zi /nologo /W3 /sdl /Od /Gy /Gw /D NDEBUG /D _CONSOLE /EHsc /MD /Zc:inline /permissive- /TP
-set VS_LIB_OPT_RELEASE=/NOLOGO /MACHINE:X64 /LTCG
-set VS_LINK_OPT_RELEASE=/ERRORREPORT:PROMPT /INCREMENTAL /MANIFEST /manifest:embed /DEBUG /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X64 /MANIFESTUAC:"level='asInvoker' uiAccess='false'"
+REM /O1 = Minimize size, /Oi = Intrinsic functions, /Oy = Omit frame pointers
+REM /GL = Whole program optimization, /GS- = Disable security checks, /Gy = Function-level linking
+REM /Gw = Optimize global data, /GF = String pooling
+
+set VS_CL_OPT_RELEASE=/c /nologo /W3 /O1 /Oi /Oy /GS- /Gy /Gw /GF /D NDEBUG /D _CONSOLE /EHsc /MD /Zc:inline /permissive- /TP
+set VS_LIB_OPT_RELEASE=/NOLOGO /MACHINE:X64
+set VS_LINK_OPT_RELEASE=/OPT:REF /OPT:ICF /SUBSYSTEM:CONSOLE /MACHINE:X64
 
 REM Set active configuration
 if "%BUILD_TYPE%"=="debug" (
@@ -102,7 +105,7 @@ echo.
 echo.
 echo.
 echo To use in your projects:
-echo   1. Copy rex_8.lib to your project
+echo   1. Copy .\lib\pcre2\lib\rex_8.lib to your project
 echo   2. Add include path: /I"%VCPKG_INCLUDE%"
 echo   3. Link with: rex_8.lib
 echo.
